@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>⭐ Симба: Времена ⭐</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            background: linear-gradient(145deg, #ffd966 0%, #ffb347 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        html {
+            height: -webkit-fill-available;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(255, 250, 225, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 40px 40px 30px 30px;
+            box-shadow: 0 20px 30px rgba(180, 90, 0, 0.4);
+            border: 4px solid #ffaa33;
+            padding: 16px 16px 25px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Зона кота */
+        .cat-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            background: #fce5c1;
+            border-radius: 60px 60px 25px 25px;
+            padding: 10px 15px 8px 12px;
+            border: 3px solid #d46f2c;
+            box-shadow: inset 0 -3px 0 #b85f20, 0 6px 10px rgba(200, 100, 20, 0.3);
+        }
+
+        .cat-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        
+        .cat-container:active {
+            transform: scale(0.95);
+        }
+        
+        .ginger-cat {
+            font-size: 4.8rem;
+            line-height: 1;
+            filter: drop-shadow(3px 6px 3px rgba(200, 100, 0, 0.5));
+            background: radial-gradient(circle at 30% 40%, #ff8800, #cc5500);
+            border-radius: 50% 50% 45% 45%;
+            padding: 5px 8px 0 8px;
+            border: 3px solid #ffaa33;
+            box-shadow: 0 3px 0 #aa4411;
+            color: #ffdd99;
+            text-shadow: 1px 1px 0 #aa4411;
+            display: inline-block;
+        }
+        
+        .ginger-cat.laughing {
+            background: radial-gradient(circle at 30% 40%, #ffaa33, #dd7700);
+            color: #fffacd;
+            animation: laugh 0.3s ease-in-out;
+        }
+        
+        @keyframes laugh {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+
+        .speech-bubble {
+            background: white;
+            border-radius: 25px 25px 25px 5px;
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #592d0f;
+            box-shadow: 4px 6px 0 #b45f1b;
+            border: 3px solid #ffa047;
+            flex: 1;
+            min-width: 150px;
+            word-break: break-word;
+        }
+        
+        .speech-bubble span {
+            background: #fff2b5;
+            padding: 3px 8px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 4px;
+            font-size: 0.95rem;
+        }
+
+        .quiz-area {
+            background: #fcf3dd;
+            border-radius: 30px;
+            padding: 18px 15px;
+            border: 4px solid #fba76f;
+            margin-top: 12px;
+            box-shadow: inset 0 0 0 2px #ffe2b3, 0 6px 10px #b95f1a;
+        }
+
+        .question-counter {
+            background: #cff0ff;
+            padding: 6px 16px;
+            border-radius: 30px;
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #194b66;
+            border: 2px solid #3c8dad;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 0 #1f5e7a;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: #3b220b;
+            text-shadow: 2px 2px 0 #ffc48c;
+            word-break: break-word;
+            background: #feeac1;
+            padding: 12px 15px;
+            border-radius: 50px 10px 50px 10px;
+            border: 3px dashed #f0812b;
+            line-height: 1.4;
+        }
+
+        .answers-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin: 15px 0 12px;
+        }
+
+        .answer-btn {
+            background: linear-gradient(145deg, #fef7b5, #ffe087);
+            border: 3px solid #f2973a;
+            color: #3f260e;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 16px 12px;
+            border-radius: 80px 15px 80px 15px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #bb6016;
+            text-align: center;
+            line-height: 1.3;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            appearance: none;
+            transition: all 0.05s;
+        }
+
+        .answer-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #bb6016;
+            background: #ffe087;
+        }
+
+        .answer-btn.selected-correct {
+            background: #b5e6b5;
+            border-color: #2b7a2b;
+            box-shadow: 0 3px 0 #1b5e1b;
+            transform: translateY(2px);
+        }
+
+        .answer-btn.selected-wrong {
+            background: #f8b5b5;
+            border-color: #b33b3b;
+            box-shadow: 0 3px 0 #7a2626;
+            transform: translateY(2px);
+        }
+
+        .explanation-box {
+            background: #e6f3ff;
+            border-radius: 20px;
+            padding: 12px 15px;
+            margin: 8px 0 0;
+            border-left: 10px solid #3c8dad;
+            font-size: 1rem;
+            color: #1a465a;
+            box-shadow: inset 0 0 5px #b8d6f0;
+            min-height: 60px;
+            line-height: 1.4;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            gap: 8px;
+        }
+        
+        .next-btn, .restart-btn {
+            background: #faa75e;
+            border: none;
+            font-size: 1.4rem;
+            padding: 12px 16px;
+            border-radius: 40px;
+            font-weight: bold;
+            color: #381f00;
+            border: 3px solid #f1d58c;
+            box-shadow: 0 5px 0 #964b1b;
+            cursor: pointer;
+            transition: 0.05s;
+            letter-spacing: 0.5px;
+            flex: 1;
+            text-align: center;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        .restart-btn {
+            background: #f3c26b;
+            font-size: 1.2rem;
+            padding: 10px 12px;
+            flex: 0.6;
+        }
+        
+        .next-btn:active, .restart-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #964b1b;
+        }
+        
+        .next-btn:disabled {
+            opacity: 0.3;
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #964b1b;
+            pointer-events: none;
+        }
+
+        .results-panel {
+            margin-top: 20px;
+            background: #b2d8b2;
+            border-radius: 30px;
+            padding: 18px;
+            border: 4px solid #5e9e5e;
+            color: #173817;
+            font-size: 1rem;
+            box-shadow: inset 0 0 10px #ecffd3, 0 6px 10px #456b1e;
+        }
+        
+        .results-panel h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        
+        .results-list {
+            list-style: none;
+            max-height: 250px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .results-list li {
+            background: #fef7cd;
+            margin: 6px 0;
+            padding: 8px 12px;
+            border-radius: 25px;
+            border-left: 12px solid #ff984f;
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+        
+        .correct-badge { color: #1c7e1c; font-weight: 800; margin-left: 5px; }
+        .wrong-badge { color: #b34141; font-weight: 800; margin-left: 5px; }
+
+        .footnote {
+            text-align: center;
+            margin-top: 8px;
+            color: #673d1b;
+            font-size: 0.85rem;
+        }
+        
+        .lapi-lap {
+            animation: popUp 0.4s ease-out;
+            display: inline-block;
+        }
+        
+        @keyframes popUp {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <div class="cat-header">
+        <div class="cat-container" id="catContainer" onclick="handleCatClick(event)">
+            <div class="ginger-cat" id="gingerCat">🐱</div>
+        </div>
+        <div class="speech-bubble" id="simbaTalk">
+            Привет! Я Симба 🐱
+            <span id="dynamicPhrase">Нажми на кота!</span>
+        </div>
+    </div>
+
+    <div class="quiz-area" id="quizArea">
+        <div class="question-counter" id="counter">Вопрос 1 / 10</div>
+        <div class="question-text" id="questionDisplay"></div>
+
+        <div class="answers-grid" id="answersContainer"></div>
+        
+        <div class="explanation-box" id="explanationBox">
+            ✨ Жду твоего ответа...
+        </div>
+
+        <div class="nav-buttons">
+            <button class="restart-btn" id="restartBtn" onclick="handleRestart(event)">🔄 Заново</button>
+            <button class="next-btn" id="nextBtn" onclick="handleNext(event)">Вперёд ➡️</button>
+        </div>
+    </div>
+
+    <div class="results-panel" id="resultsPanel" style="display: none;">
+        <h3>📋 Результаты 📋</h3>
+        <ul class="results-list" id="resultsList"></ul>
+        <div style="text-align: right; margin-top: 5px;">😺 Симба</div>
+    </div>
+    <div class="footnote">⭐ Мяу ❤️</div>
+</div>
+
+<script>
+    (function() {
+        // ----- Вопросы с подробными объяснениями -----
+        const questionsData = [
+            {
+                question: "Какое время используется для действий, происходящих прямо сейчас?",
+                options: ["Present Simple", "Present Continuous", "Past Simple"],
+                correct: 1,
+                explanation: "Present Continuous (am/is/are + V-ing) описывает действие, происходящее в момент речи. Например: 'I am reading now'."
+            },
+            {
+                question: "I ______ to London next summer.",
+                options: ["will go", "go", "went"],
+                correct: 0,
+                explanation: "Future Simple (will + глагол) используется для будущих действий. 'next summer' указывает на будущее."
+            },
+            {
+                question: "Окончание -ed характерно для...",
+                options: ["Past Simple (правильные глаголы)", "Present Simple", "Future Simple"],
+                correct: 0,
+                explanation: "Правильные глаголы в Past Simple образуются при помощи окончания -ed. Например: play → played."
+            },
+            {
+                question: "Выберите предложение в Present Perfect:",
+                options: ["I have seen that film.", "I saw that film.", "I will see that film."],
+                correct: 0,
+                explanation: "Present Perfect (have/has + V3) связывает прошлое с настоящим. 'I have seen that film' — важен результат сейчас."
+            },
+            {
+                question: "Маркер 'every day' указывает на...",
+                options: ["Present Simple", "Past Continuous", "Future Perfect"],
+                correct: 0,
+                explanation: "Слова-маркеры: every day, usually, always — указывают на регулярные действия в настоящем (Present Simple)."
+            },
+            {
+                question: "She ______ to music when I came home.",
+                options: ["listened", "was listening", "is listening"],
+                correct: 1,
+                explanation: "Past Continuous (was/were + V-ing) описывает длительное действие в прошлом, которое было прервано другим действием (when I came home)."
+            },
+            {
+                question: "She ______ already finished her homework.",
+                options: ["has", "have", "is"],
+                correct: 0,
+                explanation: "Present Perfect с she требует has. 'Already' — маркер Present Perfect. Правильно: She has already finished."
+            },
+            {
+                question: "Какое время описывает длительное действие в прошлом, прерванное другим?",
+                options: ["Past Perfect", "Past Continuous", "Past Simple"],
+                correct: 1,
+                explanation: "Past Continuous (was/were + V-ing) используется для действия в процессе, которое прервано другим действием. Например: I was sleeping when the phone rang."
+            },
+            {
+                question: "By the time we arrived, the movie ______.",
+                options: ["already started", "had already started", "has already started"],
+                correct: 1,
+                explanation: "Past Perfect (had + V3) используется для действия, которое произошло до другого действия в прошлом. Сначала фильм начался, потом мы приехали."
+            },
+            {
+                question: "Which sentence is correct (Present Perfect)?",
+                options: ["I have been to Italy.", "I am been to Italy.", "I has been to Italy."],
+                correct: 0,
+                explanation: "Present Perfect: have/has + been (V3). 'I have been' — правильно. 'I am been' — грамматически неверно."
+            }
+        ];
+
+        function shuffleQuestionOptions(question) {
+            const options = [...question.options];
+            const correctText = options[question.correct];
+            
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+            
+            const newCorrect = options.indexOf(correctText);
+            
+            return {
+                question: question.question,
+                options: options,
+                correct: newCorrect,
+                explanation: question.explanation
+            };
+        }
+
+        let questions = questionsData.map(q => shuffleQuestionOptions(q));
+        let currentIndex = 0;
+        let userAnswers = new Array(10).fill(null);
+        let quizCompleted = false;
+
+        // Элементы
+        const gingerCat = document.getElementById('gingerCat');
+        const simbaTalkSpan = document.getElementById('dynamicPhrase');
+        const counterDiv = document.getElementById('counter');
+        const questionDiv = document.getElementById('questionDisplay');
+        const answersDiv = document.getElementById('answersContainer');
+        const explanationBox = document.getElementById('explanationBox');
+        const nextBtn = document.getElementById('nextBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const resultsPanel = document.getElementById('resultsPanel');
+        const resultsList = document.getElementById('resultsList');
+
+        // Функции для глобального доступа (onclick атрибуты)
+        window.handleCatClick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showLapiLap();
+        };
+
+        window.handleNext = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleNextClick();
+        };
+
+        window.handleRestart = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            restartGame();
+        };
+
+        function handleNextClick() {
+            if (quizCompleted) return;
+
+            if (userAnswers[currentIndex] === null) {
+                simbaTalkSpan.innerText = '❗ Выбери ответ!';
+                return;
+            }
+
+            const allAnswered = userAnswers.every(a => a !== null);
+
+            if (allAnswered) {
+                finishQuiz();
+                return;
+            }
+
+            if (currentIndex < 9) {
+                currentIndex++;
+                renderQuestion();
+            }
+        }
+
+        function showLapiLap() {
+            simbaTalkSpan.innerHTML = '<span class="lapi-lap">ляпи-ляп! 😹</span>';
+            gingerCat.innerText = '😹';
+            gingerCat.classList.add('laughing');
+            
+            setTimeout(() => {
+                if (!quizCompleted && userAnswers[currentIndex] === null) {
+                    simbaTalkSpan.innerText = 'Выбирай!';
+                }
+                gingerCat.innerText = '🐱';
+                gingerCat.classList.remove('laughing');
+            }, 1500);
+        }
+
+        function updateCatEmoji(isCorrect = null) {
+            if (quizCompleted) {
+                gingerCat.innerText = '😺🏆';
+                gingerCat.classList.remove('laughing');
+            } else if (isCorrect === true) {
+                gingerCat.innerText = '😸✨';
+                gingerCat.classList.add('laughing');
+                setTimeout(() => { 
+                    gingerCat.innerText = '🐱';
+                    gingerCat.classList.remove('laughing');
+                }, 1000);
+            } else if (isCorrect === false) {
+                gingerCat.innerText = '😿❓';
+                gingerCat.classList.add('laughing');
+                setTimeout(() => { 
+                    gingerCat.innerText = '🐱';
+                    gingerCat.classList.remove('laughing');
+                }, 1000);
+            } else {
+                gingerCat.innerText = '🐱';
+                gingerCat.classList.remove('laughing');
+            }
+        }
+
+        function renderQuestion() {
+            if (quizCompleted) return;
+
+            const q = questions[currentIndex];
+            questionDiv.innerText = q.question;
+            counterDiv.innerText = `Вопрос ${currentIndex + 1} / 10`;
+
+            answersDiv.innerHTML = '';
+            
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('div');
+                btn.className = 'answer-btn';
+                btn.innerText = opt;
+                btn.setAttribute('data-index', idx);
+                
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    if (quizCompleted) return;
+                    if (userAnswers[currentIndex] !== null) {
+                        simbaTalkSpan.innerText = 'Уже ответил!';
+                        return;
+                    }
+
+                    userAnswers[currentIndex] = idx;
+                    
+                    const isCorrect = (idx === q.correct);
+                    updateCatEmoji(isCorrect);
+
+                    if (isCorrect) {
+                        simbaTalkSpan.innerText = '✅ Верно!';
+                        explanationBox.innerHTML = `✅ ${q.explanation}`;
+                    } else {
+                        simbaTalkSpan.innerText = '❌ Не совсем...';
+                        explanationBox.innerHTML = `❌ Правильно: ${q.options[q.correct]}.<br>📚 ${q.explanation}`;
+                    }
+
+                    renderQuestion();
+                };
+
+                if (userAnswers[currentIndex] !== null) {
+                    const selectedIdx = userAnswers[currentIndex];
+                    if (selectedIdx === idx) {
+                        btn.classList.add(selectedIdx === q.correct ? 'selected-correct' : 'selected-wrong');
+                    }
+                }
+
+                answersDiv.appendChild(btn);
+            });
+
+            if (userAnswers[currentIndex] !== null) {
+                const selected = userAnswers[currentIndex];
+                const q = questions[currentIndex];
+                if (selected === q.correct) {
+                    explanationBox.innerHTML = `✅ ${q.explanation}`;
+                } else {
+                    explanationBox.innerHTML = `❌ Правильно: ${q.options[q.correct]}.<br>📚 ${q.explanation}`;
+                }
+            } else {
+                explanationBox.innerHTML = '✨ Жду твоего ответа...';
+            }
+
+            const allAnswered = userAnswers.every(a => a !== null);
+            nextBtn.innerText = allAnswered && !quizCompleted ? '🏁 Результаты' : 'Вперёд ➡️';
+        }
+
+        function finishQuiz() {
+            quizCompleted = true;
+            resultsPanel.style.display = 'block';
+            updateCatEmoji();
+
+            resultsList.innerHTML = '';
+            questions.forEach((q, i) => {
+                const userChoice = userAnswers[i];
+                const isCorrect = (userChoice === q.correct);
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <strong>${i + 1}. ${q.question}</strong><br>
+                    Твой ответ: ${userChoice !== null ? q.options[userChoice] : 'не выбран'} 
+                    ${isCorrect ? '<span class="correct-badge">✓</span>' : '<span class="wrong-badge">✗</span>'}
+                    <br><small>Правильно: ${q.options[q.correct]}</small>
+                `;
+                resultsList.appendChild(li);
+            });
+
+            simbaTalkSpan.innerText = 'Смотри результаты!';
+            
+            const answerBtns = document.querySelectorAll('.answer-btn');
+            answerBtns.forEach(btn => {
+                btn.onclick = null;
+            });
+            
+            nextBtn.disabled = true;
+        }
+
+        function restartGame() {
+            questions = questionsData.map(q => shuffleQuestionOptions(q));
+            
+            currentIndex = 0;
+            userAnswers = new Array(10).fill(null);
+            quizCompleted = false;
+            resultsPanel.style.display = 'none';
+            nextBtn.disabled = false;
+            simbaTalkSpan.innerText = 'Выбирай!';
+            explanationBox.innerHTML = '✨ Жду твоего ответа...';
+            updateCatEmoji();
+            
+            renderQuestion();
+        }
+
+        // Инициализация
+        renderQuestion();
+
+        // Отключаем контекстное меню и выделение
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('touchstart', e => {
+            if (e.target.closest('.answer-btn, .next-btn, .restart-btn, .cat-container')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+    })();
+</script>
+</body>
+</html>
